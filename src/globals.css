@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #050508;
+  color: #e2e8f0;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #0a0a12; }
+::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+
+.said-title { letter-spacing: 0.35em; font-family: 'Courier New', monospace; }
+.text-glow { text-shadow: 0 0 20px rgba(59,130,246,0.8); }
+
+.chat-bubble-user { background: linear-gradient(135deg,#1e3a5f,#1a2744); border: 1px solid rgba(37,99,235,0.25); }
+.chat-bubble-ai { background: #111120; border: 1px solid #1a1a2e; }
+
+.sidebar-item { border-left: 2px solid transparent; transition: all 0.15s; }
+.sidebar-item:hover { background: rgba(59,130,246,0.08); color: #93c5fd; border-left-color: rgba(59,130,246,0.3); }
+.sidebar-item-active { background: rgba(59,130,246,0.15); border-left-color: #3b82f6; color: #3b82f6; }
+
+.terminal-input { background: transparent; border: none; outline: none; font-family: 'Courier New', monospace; font-size: 13px; color: #00ff88; flex: 1; }
+
+.code-editor { background: #080812; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #a9b1d6; resize: none; outline: none; border: none; width: 100%; }
+
+.grid-bg {
+  background-image: linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px), linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);
+  background-size: 40px 40px;
+}
+
+@keyframes pulse-glow {
+  0%,100% { box-shadow: 0 0 20px rgba(59,130,246,0.4); }
+  50% { box-shadow: 0 0 50px rgba(59,130,246,0.9),0 0 100px rgba(59,130,246,0.3); }
+}
+@keyframes scan-line { 0% { top: -10%; } 100% { top: 110%; } }
+@keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes typing-dots {
+  0%,60%,100% { opacity: 0; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-4px); }
+}
+
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-fade-in-up { animation: fade-in-up 0.5s ease forwards; }
+.dot-1 { animation: typing-dots 1.4s infinite 0s; }
+.dot-2 { animation: typing-dots 1.4s infinite 0.2s; }
+.dot-3 { animation: typing-dots 1.4s infinite 0.4s; }
