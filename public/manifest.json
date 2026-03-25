@@ -1,0 +1,16 @@
+{
+  "name": "S.A.I.D. \u2014 Jim",
+  "short_name": "Jim",
+  "description": "Strategic Analytical Information Deployment \u2014 MYM Logic LLC",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
