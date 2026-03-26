@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Save, CheckCircle, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
 const LOGO = "https://media.base44.com/images/public/user_69af5468cf5d5a8b668927e7/aa22ee38d_ueiiblue.png";
-const DEFAULT = { name:"", personality:"", communicationStyle:"", systemPrompt:"", apiKey:"", model:"gpt-4o", audioApiKey:"", videoApiKey:"", customEndpoint:"" };
+const DEFAULT = { name:"", personality:"", communicationStyle:"", systemPrompt:"", apiKey:"", model:"gemma3:12b", audioApiKey:"", videoApiKey:"", customEndpoint:"" };
 
 export default function IdentityPanel() {
   const [id, setId] = useState(DEFAULT);
@@ -76,12 +76,9 @@ export default function IdentityPanel() {
               Keys stored locally only. Never sent anywhere except the configured API endpoints.
             </div>
             <div>
-              <label className="text-xs font-mono text-gray-600 uppercase tracking-widest block mb-1.5">OpenAI Model</label>
-              <select value={id.model} onChange={e=>setId(i=>({...i,model:e.target.value}))}
-                className="w-full rounded-lg px-3 py-2.5 text-sm text-gray-200 font-mono outline-none"
-                style={{background:"#0d0d1a",border:"1px solid #1a1a2e"}}>
-                {["gpt-4o","gpt-4o-mini","gpt-4-turbo","gpt-4","gpt-3.5-turbo"].map(m=><option key={m} value={m}>{m}</option>)}
-              </select>
+              <label className="text-xs font-mono text-gray-600 uppercase tracking-widest block mb-1.5">Model</label>
+              <input value={id.model} onChange={e=>setId(i=>({...i,model:e.target.value}))} placeholder="e.g. gemma3:12b or gpt-4o"
+                className="w-full bg-[#0d0d1a] border border-[#1a1a3e] rounded px-3 py-2 text-sm font-mono text-gray-300 focus:outline-none focus:border-blue-500" />
             </div>
             {field("apiKey","OpenAI API Key","sk-...","password")}
             {field("audioApiKey","Audio API Key (ElevenLabs/Suno)","API key for audio generation","password")}
