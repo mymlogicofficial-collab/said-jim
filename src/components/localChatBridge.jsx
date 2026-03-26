@@ -4,7 +4,7 @@ class LocalChatBridge {
   constructor() {
     this.socket = null;
     this.status = "disconnected";
-    this.port = parseInt(localStorage.getItem("said_local_port") || "5055", 10);
+    this.port = parseInt(localStorage.getItem("said_local_port") || "5000", 10);
     this.onStatusChange = null;
     this.onMessage = null;
     this.onToken = null;
@@ -63,7 +63,7 @@ class LocalChatBridge {
 
   send(text, history) {
     if (!this.socket?.connected) return;
-    this.socket.emit("user_message", {
+    this.socket.emit("message", {
       message: text,
       history: history.slice(-12).map(m => ({ role: m.role, content: m.text || "" })),
     });
