@@ -12,7 +12,7 @@ const STATUS_STYLE = {
 export default function LocalEngineBar({ onStatusChange }) {
   const [status, setStatus] = useState(localChatBridge.status);
   const [showSettings, setShowSettings] = useState(false);
-  const [port, setPort] = useState(String(localChatBridge.port || 5000));
+  const [port, setPort] = useState(String(localChatBridge.port || 5055));
 
   useEffect(() => {
     localChatBridge.onStatusChange = (s) => {
@@ -46,7 +46,7 @@ export default function LocalEngineBar({ onStatusChange }) {
           <input value={port} onChange={e => setPort(e.target.value)}
             onKeyDown={e => e.key === "Enter" && connect()}
             className="w-16 bg-transparent text-[10px] font-mono text-gray-300 outline-none border-b border-blue-800 text-center"
-            placeholder="8765" />
+            placeholder="5055" />
           <button onClick={connect}
             className="px-2 py-0.5 rounded text-[10px] font-mono text-white"
             style={{ background: "#1d4ed8" }}>
