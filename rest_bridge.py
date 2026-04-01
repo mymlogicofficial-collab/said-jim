@@ -39,4 +39,4 @@ async def handle_chat(request):
 resource = cors.add(app.router.add_resource("/chat/completions"))
 cors.add(resource.add_route("POST", handle_chat))
 
-web.run_app(app, port=5055)
+web.run_app(app, port=5056)
