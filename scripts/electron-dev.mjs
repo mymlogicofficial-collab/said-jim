@@ -10,11 +10,15 @@ const devUrl = process.env.ELECTRON_RENDERER_URL ?? "http://localhost:5173/";
 const viteHost = process.env.VITE_HOST ?? "127.0.0.1";
 const vitePort = process.env.VITE_PORT ?? "5173";
 
+// On Windows, npm is npm.cmd
+const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
+
 function spawnCommand(command, args, options = {}) {
   return spawn(command, args, {
     stdio: "inherit",
     cwd: projectRoot,
     env: process.env,
+    shell: true,
     ...options,
   });
 }
@@ -42,8 +46,7 @@ const main = async () => {
   const serverUp = await isDevServerUp(devUrl);
 
   if (!serverUp) {
-    // Start Vite dev server.
-    viteProc = spawnCommand("npm", ["run", "dev", "--", "--host", viteHost, "--port", vitePort]);
+    viteProc = spawnCommand(npmCmd, ["run", "dev", "--", "--host", viteHost, "--port", vitePort]);
 
     const ok = await waitForDevServer(devUrl);
     if (!ok) {
@@ -53,7 +56,6 @@ const main = async () => {
     }
   }
 
-  // Start Electron pointing at our main process file.
   const electronEntry = path.join(projectRoot, "electron", "main.js");
   const electronExe = path.join(projectRoot, "node_modules", "electron", "dist", "electron.exe");
 
@@ -62,6 +64,7 @@ const main = async () => {
       ? spawn(electronExe, [electronEntry], {
           stdio: "inherit",
           cwd: projectRoot,
+          shell: true,
           env: { ...process.env, ELECTRON_RENDERER_URL: devUrl },
         })
       : spawn("electron", [electronEntry], {
@@ -80,4 +83,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-
