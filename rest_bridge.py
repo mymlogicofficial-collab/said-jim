@@ -1,27 +1,25 @@
 from aiohttp import web
-import aiohttp_cors
-import json
 import os
 from aiohttp import ClientSession, ClientTimeout
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma3:12b")
 
+CORS_HEADERS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, bypass-tunnel-reminder, ngrok-skip-browser-warning",
+}
+
 app = web.Application()
 
-cors = aiohttp_cors.setup(app, defaults={
-    "*": aiohttp_cors.ResourceOptions(
-        allow_credentials=True,
-        expose_headers="*",
-        allow_headers="*",
-        allow_methods=["GET", "POST", "OPTIONS"],
-    )
-})
+async def handle_options(request):
+    return web.Response(status=200, headers=CORS_HEADERS)
 
 async def handle_health(request):
-    return web.json_response({"status": "ok", "model": OLLAMA_MODEL})
+    return web.json_response({"status": "ok", "model": OLLAMA_MODEL}, headers=CORS_HEADERS)
 
-async def handle_chat_simple(request):
+async def handle_chat(request):
     data = await request.json()
     message = data.get("message", "")
     history = data.get("history", [])
@@ -33,7 +31,7 @@ async def handle_chat_simple(request):
         async with session.post(url, json=payload) as resp:
             result = await resp.json()
             content = result.get("message", {}).get("content", "")
-            return web.json_response({"reply": content})
+            return web.json_response({"reply": content}, headers=CORS_HEADERS)
 
 async def handle_chat_completions(request):
     data = await request.json()
@@ -48,15 +46,13 @@ async def handle_chat_completions(request):
             content = result.get("message", {}).get("content", "")
             return web.json_response({
                 "choices": [{"message": {"role": "assistant", "content": content}}]
-            })
+            }, headers=CORS_HEADERS)
 
-health_resource = cors.add(app.router.add_resource("/health"))
-cors.add(health_resource.add_route("GET", handle_health))
-
-chat_resource = cors.add(app.router.add_resource("/chat"))
-cors.add(chat_resource.add_route("POST", handle_chat_simple))
-
-completions_resource = cors.add(app.router.add_resource("/chat/completions"))
-cors.add(completions_resource.add_route("POST", handle_chat_completions))
+app.router.add_route("OPTIONS", "/health", handle_options)
+app.router.add_route("GET", "/health", handle_health)
+app.router.add_route("OPTIONS", "/chat", handle_options)
+app.router.add_route("POST", "/chat", handle_chat)
+app.router.add_route("OPTIONS", "/chat/completions", handle_options)
+app.router.add_route("POST", "/chat/completions", handle_chat_completions)
 
 web.run_app(app, port=5056)
