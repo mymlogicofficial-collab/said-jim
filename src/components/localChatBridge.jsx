@@ -14,6 +14,14 @@ class LocalChatBridge {
     this.onStatusChange?.(s);
   }
 
+  _headers() {
+    return {
+      "Content-Type": "application/json",
+      "bypass-tunnel-reminder": "true",
+      "ngrok-skip-browser-warning": "true",
+    };
+  }
+
   async connect(port, url) {
     if (url) {
       this.bridgeUrl = url;
@@ -26,7 +34,10 @@ class LocalChatBridge {
     this._setStatus("connecting");
 
     try {
-      const res = await fetch(`${this.bridgeUrl}/health`, { method: "GET" });
+      const res = await fetch(`${this.bridgeUrl}/health`, {
+        method: "GET",
+        headers: this._headers(),
+      });
       if (res.ok) {
         this._setStatus("connected");
       } else {
@@ -40,14 +51,16 @@ class LocalChatBridge {
   }
 
   async send(text, history) {
-    this._setStatus("connected");
     try {
       const res = await fetch(`${this.bridgeUrl}/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: this._headers(),
         body: JSON.stringify({
           message: text,
-          history: history.slice(-12).map(m => ({ role: m.role, content: m.text || "" })),
+          history: (history || []).slice(-12).map(m => ({
+            role: m.role,
+            content: m.text || m.content || "",
+          })),
         }),
       });
 
@@ -71,4 +84,3 @@ class LocalChatBridge {
 }
 
 export const localChatBridge = new LocalChatBridge();
-
