@@ -1,7 +1,7 @@
 class LocalChatBridge {
   constructor() {
     this.status = "disconnected";
-    this.port = parseInt(localStorage.getItem("said_local_port") || "5056", 10);
+    this.bridgeUrl = localStorage.getItem("said_bridge_url") || "https://said-jim.loca.lt";
     this.onStatusChange = null;
     this.onMessage = null;
     this.onToken = null;
@@ -14,18 +14,19 @@ class LocalChatBridge {
     this.onStatusChange?.(s);
   }
 
-  async connect(port) {
-    if (port) {
-      this.port = port;
-      localStorage.setItem("said_local_port", String(port));
+  async connect(port, url) {
+    if (url) {
+      this.bridgeUrl = url;
+      localStorage.setItem("said_bridge_url", url);
+    } else if (port) {
+      this.bridgeUrl = `http://localhost:${port}`;
+      localStorage.setItem("said_bridge_url", this.bridgeUrl);
     }
 
     this._setStatus("connecting");
 
     try {
-      const res = await fetch(`http://localhost:${this.port}/test`, {
-        method: "GET",
-      });
+      const res = await fetch(`${this.bridgeUrl}/health`, { method: "GET" });
       if (res.ok) {
         this._setStatus("connected");
       } else {
@@ -41,7 +42,7 @@ class LocalChatBridge {
   async send(text, history) {
     this._setStatus("connected");
     try {
-      const res = await fetch(`http://localhost:${this.port}/chat`, {
+      const res = await fetch(`${this.bridgeUrl}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -70,3 +71,4 @@ class LocalChatBridge {
 }
 
 export const localChatBridge = new LocalChatBridge();
+
