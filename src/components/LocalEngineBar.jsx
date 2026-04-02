@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { localChatBridge } from "./localChatBridge";
 import { Wifi, WifiOff, Loader2, Settings2, Check } from "lucide-react";
 
+const TUNNEL_URL = "https://said-jim.loca.lt";
+
 const STATUS_STYLE = {
   connected:    { color: "#22c55e", label: "LOCAL ENGINE CONNECTED",    Icon: Wifi },
   connecting:   { color: "#f59e0b", label: "CONNECTING...",             Icon: Loader2, spin: true },
@@ -12,7 +14,7 @@ const STATUS_STYLE = {
 export default function LocalEngineBar({ onStatusChange }) {
   const [status, setStatus] = useState(localChatBridge.status);
   const [showSettings, setShowSettings] = useState(false);
-  const [port, setPort] = useState(String(localChatBridge.port || 5000));
+  const [bridgeUrl, setBridgeUrl] = useState(localStorage.getItem("said_bridge_url") || TUNNEL_URL);
 
   useEffect(() => {
     localChatBridge.onStatusChange = (s) => {
@@ -23,7 +25,8 @@ export default function LocalEngineBar({ onStatusChange }) {
   }, [onStatusChange]);
 
   const connect = () => {
-    localChatBridge.connect(parseInt(port, 10));
+    localStorage.setItem("said_bridge_url", bridgeUrl);
+    localChatBridge.connect(null, bridgeUrl);
     setShowSettings(false);
   };
 
@@ -42,11 +45,11 @@ export default function LocalEngineBar({ onStatusChange }) {
 
       {showSettings ? (
         <div className="flex items-center gap-1.5">
-          <span className="text-[10px] font-mono text-gray-600">ws://localhost:</span>
-          <input value={port} onChange={e => setPort(e.target.value)}
+          <span className="text-[10px] font-mono text-gray-600">bridge:</span>
+          <input value={bridgeUrl} onChange={e => setBridgeUrl(e.target.value)}
             onKeyDown={e => e.key === "Enter" && connect()}
-            className="w-16 bg-transparent text-[10px] font-mono text-gray-300 outline-none border-b border-blue-800 text-center"
-            placeholder="5000" />
+            className="w-48 bg-transparent text-[10px] font-mono text-gray-300 outline-none border-b border-blue-800 text-center"
+            placeholder="https://said-jim.loca.lt" />
           <button onClick={connect}
             className="px-2 py-0.5 rounded text-[10px] font-mono text-white"
             style={{ background: "#1d4ed8" }}>
@@ -76,3 +79,4 @@ export default function LocalEngineBar({ onStatusChange }) {
     </div>
   );
 }
+
