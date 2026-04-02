@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { io } from "socket.io-client";
 
-const DEFAULT_PORT = 5055;
+const DEFAULT_PORT = 5056;
 
 const MAX_HISTORY_LENGTH = 12;
 
 /**
  * useSAIDSocket – React hook for connecting to the chatron-voice-link Socket.IO bridge.
  *
- * Bridge protocol (port 5055 by default):
+ * Bridge protocol (port 5056 by default):
  *   Emit : "user_message"  { message: string, history: [{role, content}] }
  *   On   : "token"         streamed partial response
  *   On   : "done"          response complete
