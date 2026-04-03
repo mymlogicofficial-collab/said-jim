@@ -1,7 +1,7 @@
-class LocalChatBridge {
+Class LocalChatBridge {
   constructor() {
     this.status = "disconnected";
-    this.bridgeUrl = localStorage.getItem("said_bridge_url") || "https://said-jim.loca.lt";
+    this.bridgeUrl = localStorage.getItem("said_bridge_url") || "http://localhost:5000";
     this.onStatusChange = null;
     this.onMessage = null;
     this.onToken = null;
