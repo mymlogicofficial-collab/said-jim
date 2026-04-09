@@ -1,4 +1,4 @@
-Class LocalChatBridge {
+class LocalChatBridge {
   constructor() {
     this.status = "disconnected";
     this.bridgeUrl = localStorage.getItem("said_bridge_url") || "http://localhost:5000";
